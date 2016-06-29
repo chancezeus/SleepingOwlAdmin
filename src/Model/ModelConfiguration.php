@@ -818,6 +818,26 @@ class ModelConfiguration
     }
 
     /**
+     * @return string
+     */
+    public function getMessageOnError()
+    {
+        if (is_null($this->messageOnUpdate)) {
+            $this->messageOnUpdate = trans('sleeping_owl::lang.message.error');
+        }
+
+        return $this->messageOnError;
+    }
+
+    /**
+     * @param string $messageOnError
+     */
+    public function setMessageOnError($messageOnError)
+    {
+        $this->messageOnError = $messageOnError;
+    }
+
+    /**
      * @return null|string
      */
     public function hasCustomControllerClass()

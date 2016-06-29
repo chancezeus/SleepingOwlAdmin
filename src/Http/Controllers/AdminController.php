@@ -117,6 +117,7 @@ class AdminController extends Controller
                 return redirect()->back()
                     ->withErrors($validator)
                     ->withInput()
+                    ->with('error_message', $model->getMessageOnError())
                     ->with([
                         '_redirectBack' => $backUrl,
                     ]);
@@ -195,7 +196,8 @@ class AdminController extends Controller
             if (($validator = $editForm->validate($model)) instanceof Validator) {
                 return redirect()->back()
                     ->withErrors($validator)
-                    ->withInput();
+                    ->withInput()
+                    ->with('error_message', $model->getMessageOnError());
             }
 
             if ($model->fireEvent('updating', true, $item) === false) {
@@ -343,7 +345,8 @@ class AdminController extends Controller
             ->with('title', $title)
             ->with('content', $content)
             ->with('breadcrumbKey', $this->parentBreadcrumb)
-            ->with('successMessage', session('success_message'));
+            ->with('successMessage', session('success_message'))
+            ->with('errorMessage', session('error_message'));
     }
 
     /**
@@ -362,7 +365,8 @@ class AdminController extends Controller
             ->with('title', $title)
             ->with('content', $content)
             ->with('breadcrumbKey', $this->parentBreadcrumb)
-            ->with('successMessage', session('success_message'));
+            ->with('successMessage', session('success_message'))
+            ->with('errorMessage', session('error_message'));
     }
 
     /**
