@@ -101,5 +101,7 @@ return [
         'deleted' => '<i class="fa fa-check fa-lg"></i> Record deleted successfully',
         'destroyed' => '<i class="fa fa-check fa-lg"></i> Record destroyed successfully',
         'restored' => '<i class="fa fa-check fa-lg"></i> Record restored successfully',
+        'error' => '<i class="fa fa-times fa-lg"></i> An error occurred',
+        'validation' => '<i class="fa fa-times fa-lg"></i> Could not validate the record, check the input'
     ],
 ];
