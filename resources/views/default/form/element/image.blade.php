@@ -17,6 +17,7 @@
 				'id' => $model->getKey()
 			]) }}"
 			value="{{ $value }}"
+			file="{{ $fileUrl }}"
 			:readonly="{{ $readonly ? 'true' : 'false' }}"
 			name="{{ $name }}"
 			inline-template

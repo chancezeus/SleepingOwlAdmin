@@ -2,6 +2,8 @@
 
 namespace SleepingOwl\Admin\Form\Element;
 
+use Storage;
+
 class Images extends Image
 {
     /**
@@ -72,5 +74,14 @@ class Images extends Image
         }
 
         return $value;
+    }
+
+    public function toArray()
+    {
+        return array_merge(parent::toArray(), [
+            'fileUrl' => ($value = $this->getValueFromModel()) ? array_map(function($value) {
+                return $value ? Storage::disk($this->getUploadDisk())->url($value) : null;
+            }, $value) : null
+        ]);
     }
 }

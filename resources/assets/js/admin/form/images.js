@@ -7,6 +7,10 @@ Vue.component('element-images', Vue.extend({
             type: Array,
             default: () => new Array
         },
+        files: {
+            type: Array,
+            default: () => new Array
+        },
         readonly: {
             type: Boolean,
             default: false
@@ -51,6 +55,7 @@ Vue.component('element-images', Vue.extend({
                 },
                 success (file, response) {
                     self.values.push(response.value);
+                    self.files.push(response.path);
                 },
                 error (file, response) {
                     if(_.isArray(response.errors)) {

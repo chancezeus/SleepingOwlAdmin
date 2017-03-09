@@ -16,6 +16,7 @@
 				'id' => $model->getKey()
 			]) }}"
 			value="{{ $value }}"
+			file="{{ $fileUrl }}"
 			:readonly="{{ $readonly ? 'true' : 'false' }}"
 			name="{{ $name }}"
 			inline-template
@@ -34,7 +35,7 @@
                     <i class="fa fa-fw fa-lg fa-file-o"></i>
                 </div>
                 <div class="form-element-files__info">
-                    <a :href="file" class="btn btn-default btn-xs pull-right">
+                    <a :href="link" class="btn btn-default btn-xs pull-right">
                         <i class="fa fa-cloud-download"></i>
                     </a>
 

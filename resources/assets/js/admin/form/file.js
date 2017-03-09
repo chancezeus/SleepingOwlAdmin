@@ -6,6 +6,9 @@ Vue.component('element-file', Vue.extend({
         value: {
             default: ''
         },
+        file: {
+            default: ''
+        },
         readonly: {
             type: Boolean,
             default: false
@@ -40,6 +43,7 @@ Vue.component('element-file', Vue.extend({
                 },
                 success (file, response) {
                     self.value = response.value;
+                    self.file = response.path;
                 },
                 error (file, response) {
                     if(_.isArray(response.errors)) {
@@ -72,8 +76,8 @@ Vue.component('element-file', Vue.extend({
         has_value () {
             return this.value.length > 0
         },
-        file () {
-            return ((this.value.indexOf('http') === 0) ? this.value : Admin.Settings.base_url + this.value)
+        link () {
+            return ((this.file.indexOf('http') === 0) ? this.file : Admin.Settings.base_url + this.file)
         }
     }
 }));

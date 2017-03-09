@@ -6,6 +6,9 @@ Vue.component('element-image', Vue.extend({
         value: {
             default: ''
         },
+        file: {
+            default: ''
+        },
         readonly: {
             type: Boolean,
             default: false
@@ -41,6 +44,7 @@ Vue.component('element-image', Vue.extend({
                 },
                 success (file, response) {
                     self.value = response.value;
+                    self.file = response.path;
                 },
                 error (file, response) {
                     if(_.isArray(response.errors)) {
@@ -74,7 +78,7 @@ Vue.component('element-image', Vue.extend({
             return this.value.length > 0
         },
         image () {
-            return ((this.value.indexOf('http') === 0) ? this.value : Admin.Settings.base_url + this.value)
+            return ((this.file.indexOf('http') === 0) ? this.file : Admin.Settings.base_url + this.file)
         }
     }
 }));

@@ -76,7 +76,7 @@ class Image extends File
         if ($this->getSaveCallback()) {
             $callable = $this->getSaveCallback();
 
-            return call_user_func($callable, [$file, $path, $filename, $settings]);
+            return call_user_func($callable, [$file, $disk, $path, $filename, $settings]);
         }
 
         if (class_exists('Intervention\Image\Facades\Image') and (bool) getimagesize($file->getRealPath())) {

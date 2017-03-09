@@ -353,4 +353,11 @@ class File extends NamedFormElement implements WithRoutesInterface
     {
         return config('sleeping_owl.filesUploadDisk', 'public');
     }
+
+    public function toArray()
+    {
+        return array_merge(parent::toArray(), [
+            'fileUrl' => ($value = $this->getValueFromModel()) ? Storage::disk($this->getUploadDisk())->url($value) : null
+        ]);
+    }
 }
