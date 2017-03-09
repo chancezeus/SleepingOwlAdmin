@@ -23,7 +23,6 @@ Vue.component('element-images', Vue.extend({
     data () {
         return {
             errors: [],
-            values: [],
         }
     },
     ready () {
@@ -70,6 +69,7 @@ Vue.component('element-images', Vue.extend({
         remove (index) {
             var self = this;
 
+            console.log(index);
             swal({
                 title: i18next.t('lang.message.are_you_sure'),
                 type: 'warning',
