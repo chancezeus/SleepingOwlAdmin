@@ -2,6 +2,7 @@
 
 namespace SleepingOwl\Admin\Form\Element;
 
+use Storage;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\Validator;
 
@@ -64,12 +65,13 @@ class Image extends File
 
     /**
      * @param UploadedFile $file
+     * @param string $disk
      * @param string $path
      * @param string $filename
      * @param array $settings
      * @return \Closure|File|array
      */
-    public function saveFile(UploadedFile $file, $path, $filename, array $settings)
+    public function saveFile(UploadedFile $file, $disk, $path, $filename, array $settings)
     {
         if ($this->getSaveCallback()) {
             $callable = $this->getSaveCallback();
@@ -86,12 +88,14 @@ class Image extends File
 
             $value = $path.'/'.$filename;
 
-            $image->save($value);
+            $storage = Storage::disk($disk);
 
-            return ['path' => asset($value), 'value' => $value];
+            $storage->put($value, $image->stream());
+
+            return ['path' => $storage->url($value), 'value' => $value];
         }
 
-        return parent::saveFile($file, $path, $filename, $settings);
+        return parent::saveFile($file, $disk, $path, $filename, $settings);
     }
 
     /**

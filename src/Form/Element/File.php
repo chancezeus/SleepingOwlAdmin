@@ -3,6 +3,7 @@
 namespace SleepingOwl\Admin\Form\Element;
 
 use Closure;
+use Storage;
 use Illuminate\Routing\Router;
 use Illuminate\Http\UploadedFile;
 use KodiComponents\Support\Upload;
@@ -44,6 +45,11 @@ class File extends NamedFormElement implements WithRoutesInterface
      * @var array
      */
     protected $driverOptions = [];
+
+    /**
+     * @var string
+     */
+    protected $uploadDisk;
 
     /**
      * @var Closure
@@ -118,6 +124,30 @@ class File extends NamedFormElement implements WithRoutesInterface
     public function getUploadValidationRules()
     {
         return ['file' => array_unique($this->uploadValidationRules)];
+    }
+
+    /**
+     * @return string
+     */
+    public function getUploadDisk()
+    {
+        if (!$this->uploadDisk) {
+            return $this->defaultUploadDisk();
+        }
+
+        return $this->uploadDisk;
+    }
+
+    /**
+     * @param string $uploadDisk
+     *
+     * @return $this
+     */
+    public function setUploadDisk($uploadDisk)
+    {
+        $this->uploadDisk = $uploadDisk;
+
+        return $this;
     }
 
     /**
@@ -265,25 +295,28 @@ class File extends NamedFormElement implements WithRoutesInterface
 
     /**
      * @param UploadedFile $file
+     * @param string $disk
      * @param string $path
      * @param string $filename
      * @param array $settings
      * @return \Closure|array
      */
-    public function saveFile(UploadedFile $file, $path, $filename, array $settings)
+    public function saveFile(UploadedFile $file, $disk, $path, $filename, array $settings)
     {
         if ($this->getSaveCallback()) {
             $callable = $this->getSaveCallback();
 
-            return call_user_func($callable, [$file, $path, $filename, $settings]);
+            return call_user_func($callable, [$file, $disk, $path, $filename, $settings]);
         }
 
-        $file->move($path, $filename);
+        $storage = Storage::disk($disk);
+
+        $storage->putFileAs($path, $file, $filename);
 
         //TODO: Make sense take s3, rackspace or some cloud storage url
         $value = $path.'/'.$filename;
 
-        return ['path' => asset($value), 'value' => $value];
+        return ['path' => $storage->url($value), 'value' => $value];
     }
 
     /**
@@ -311,5 +344,13 @@ class File extends NamedFormElement implements WithRoutesInterface
     public function defaultUploadPath(UploadedFile $file)
     {
         return config('sleeping_owl.filesUploadDirectory', 'files/uploads');
+    }
+
+    /**
+     * @return string
+     */
+    public function defaultUploadDisk()
+    {
+        return config('sleeping_owl.filesUploadDisk', 'public');
     }
 }
