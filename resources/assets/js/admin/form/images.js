@@ -67,7 +67,7 @@ Vue.component('element-images', Vue.extend({
         image (uri) {
             return ((uri.indexOf('http') === 0) ? uri : Admin.Settings.base_url + uri);
         },
-        remove (image) {
+        remove (index) {
             var self = this;
 
             swal({
@@ -78,9 +78,8 @@ Vue.component('element-images', Vue.extend({
                 cancelButtonColor: '#d33',
                 confirmButtonText: i18next.t('lang.button.yes')
             }).then(() => {
-                self.$set('values', _.filter(self.values, function (img) {
-                    return image != img
-                }));
+                self.values.splice(index, 1);
+                self.files.splice(index, 1);
             }, dismiss => {
 
             });
