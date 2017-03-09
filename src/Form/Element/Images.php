@@ -81,7 +81,7 @@ class Images extends Image
         return array_merge(parent::toArray(), [
             'fileUrl' => ($value = $this->getValueFromModel()) ? array_map(function($value) {
                 return $value ? Storage::disk($this->getUploadDisk())->url($value) : null;
-            }, $value) : null
+            }, $value) : []
         ]);
     }
 }
