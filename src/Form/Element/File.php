@@ -357,7 +357,7 @@ class File extends NamedFormElement implements WithRoutesInterface
     public function toArray()
     {
         return array_merge(parent::toArray(), [
-            'fileUrl' => ($value = $this->getValueFromModel()) ? Storage::disk($this->getUploadDisk())->url($value) : null
+            'fileUrl' => is_string($value = $this->getValueFromModel()) ? Storage::disk($this->getUploadDisk())->url($value) : null
         ]);
     }
 }
