@@ -64,23 +64,24 @@ Vue.component('element-images', Vue.extend({
             });
         },
         image (uri) {
+            return ((uri.indexOf('http') === 0) ? uri : Admin.Url.upload(uri));
             return ((uri.indexOf('http') === 0) ? uri : Admin.Settings.base_url + uri);
         },
-        remove (index) {
+        remove (image) {
             var self = this;
 
-            swal({
-                title: i18next.t('lang.message.are_you_sure'),
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: i18next.t('lang.button.yes')
-            }).then(() => {
+            Admin.Messages.confirm(trans('lang.message.are_you_sure')).then(() => {
+                self.$set('values', _.filter(self.values, function (img) {
+                    return image != img
+                }));
+            });
+        },
+        removeIndex (index) {
+            var self = this;
+
+            Admin.Messages.confirm(trans('lang.message.are_you_sure')).then(() => {
                 self.values.splice(index, 1);
                 self.files.splice(index, 1);
-            }, dismiss => {
-
             });
         },
         closeAlert () {

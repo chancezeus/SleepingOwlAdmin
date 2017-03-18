@@ -1,8 +1,14 @@
 # Release Notes
 
 ## [Unreleased]
+ * Добавлена поддержка HtmlAttributes для всех AdminFormElement кроме File,Upload,Image,Images
+    Теперь AdminFormElement поддерживает методы setHtmlAttributes, setHtmlAttribute и прочие.
+ * Рефакторинг JS кода (http://sleepingowladmin.ru/docs/javascript)
 
-### Changed
+    Отказ от хранения настроек по url `admin/scripts`, теперь глобальный конфиг хранится в body шаблона.
+    Перенос `app.js` в футер
+
+### 4.82.20
  * Добавлен колбек на сохранение файлов (читать в документации)
      ```php
        AdminFormElement::images('some_images', "Some Label")
@@ -14,6 +20,7 @@
            }),
      ```
  * Исправлена проблема с заменой контроллера для раздела для Laravel версии > 5.2
+
  * Перенос интерфейсов `SleepingOwl\Admin\Contracts\RepositoryInterface` и `SleepingOwl\Admin\Contracts\TreeRepositoryInterface` в директорию `SleepingOwl\Admin\Contracts\Repositories`
  * Замена название директории `src\Repository` в `src\Repositories`
  * Добавлена поддержка Laravel 5.4

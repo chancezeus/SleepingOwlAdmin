@@ -357,15 +357,17 @@ class ModelConfiguration extends ModelConfigurationManager
     }
 
     /**
+     * @param array|null $payload
      * @return DisplayInterface|mixed
      */
-    public function fireDisplay()
+    public function fireDisplay(array $payload = [])
     {
         if (! is_callable($this->getDisplay())) {
             return;
         }
 
-        $display = $this->app->call($this->getDisplay());
+        $display = $this->app->call($this->getDisplay(), $payload);
+
         if ($display instanceof DisplayInterface) {
             $display->setModelClass($this->getClass());
         }

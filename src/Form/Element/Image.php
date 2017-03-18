@@ -52,6 +52,8 @@ class Image extends File
     public function setSaveCallback(\Closure $callable)
     {
         $this->saveCallback = $callable;
+
+        return $this;
     }
 
     /**

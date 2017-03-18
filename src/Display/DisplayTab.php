@@ -3,6 +3,7 @@
 namespace SleepingOwl\Admin\Display;
 
 use Illuminate\Database\Eloquent\Model;
+use SleepingOwl\Admin\Navigation\Badge;
 use SleepingOwl\Admin\Contracts\Validable;
 use SleepingOwl\Admin\Contracts\WithModel;
 use Illuminate\Contracts\Support\Renderable;
@@ -48,6 +49,11 @@ class DisplayTab implements TabInterface, DisplayInterface, FormInterface
     protected $content;
 
     /**
+     * @var
+     */
+    protected $badge;
+
+    /**
      * @var string
      */
     protected $view = 'display.tab';
@@ -56,8 +62,9 @@ class DisplayTab implements TabInterface, DisplayInterface, FormInterface
      * @param Renderable $content
      * @param string|null $label
      * @param string|null $icon
+     * @param Badge|string|\Closure|null $badge
      */
-    public function __construct(Renderable $content, $label = null, $icon = null)
+    public function __construct(Renderable $content, $label = null, $icon = null, $badge = null)
     {
         $this->content = $content;
 
@@ -68,6 +75,37 @@ class DisplayTab implements TabInterface, DisplayInterface, FormInterface
         if (! is_null($icon)) {
             $this->setIcon($icon);
         }
+
+        if (! is_null($badge)) {
+            $this->setBadge($badge);
+        }
+    }
+
+    /**
+     * @param Badge|string|\Closure|null $badge
+     * @return $this
+     */
+    public function setBadge($badge)
+    {
+        $badgeData = null;
+
+        if (is_string($badge) || is_callable($badge) || is_numeric($badge)) {
+            $badgeData = new Badge();
+            $badgeData->setView('_partials.tabs.badge');
+            $badgeData->setValue($badge);
+        }
+
+        $this->badge = $badgeData;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBadge()
+    {
+        return $this->badge;
     }
 
     /**
@@ -414,10 +452,11 @@ class DisplayTab implements TabInterface, DisplayInterface, FormInterface
     public function toArray()
     {
         return [
-            'label' => $this->getLabel(),
+            'label'  => $this->getLabel(),
             'active' => $this->isActive(),
-            'name' => $this->getName(),
-            'icon' => $this->getIcon(),
+            'name'   => $this->getName(),
+            'icon'   => $this->getIcon(),
+            'badge'  => $this->getBadge(),
         ];
     }
 }

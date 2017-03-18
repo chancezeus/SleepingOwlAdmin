@@ -282,6 +282,8 @@ class File extends NamedFormElement implements WithRoutesInterface
     public function setSaveCallback(\Closure $callable)
     {
         $this->saveCallback = $callable;
+
+        return $this;
     }
 
     /**
