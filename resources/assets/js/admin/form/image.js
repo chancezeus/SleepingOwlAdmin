@@ -70,8 +70,8 @@ Vue.component('element-image', Vue.extend({
             return this.value.length > 0
         },
         image () {
-            return ((this.value.indexOf('http') === 0) ? this.value : Admin.Url.upload(this.value))
-            return ((this.file.indexOf('http') === 0) ? this.file : Admin.Settings.base_url + this.file)
+            return ((this.file.indexOf('http') === 0) ? this.file : Admin.Url.upload(this.file))
+            // return ((this.value.indexOf('http') === 0) ? this.value : Admin.Url.upload(this.value))
         }
     }
 }));

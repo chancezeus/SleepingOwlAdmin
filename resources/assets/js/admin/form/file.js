@@ -68,11 +68,11 @@ Vue.component('element-file', Vue.extend({
         has_value () {
             return this.value.length > 0
         },
-        file () {
-            return ((this.value.indexOf('http') === 0) ? this.value : Admin.Url.upload(this.value))
-        },
+        // file () {
+        //     return ((this.value.indexOf('http') === 0) ? this.value : Admin.Url.upload(this.value))
+        // },
         link () {
-            return ((this.file.indexOf('http') === 0) ? this.file : Admin.Settings.base_url + this.file)
+            return ((this.file.indexOf('http') === 0) ? this.file : Admin.Url.upload(this.file))
         }
     }
 }));
