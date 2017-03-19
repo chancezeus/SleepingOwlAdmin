@@ -19,6 +19,7 @@ elixir(function(mix) {
 	mix
 		.less('common.less', 'public/default/css/admin-app.css')
 		.webpack('app.js', 'public/default/js/admin-app.js', false, {
+		    devtool: 'source-map',
             resolve: {
                 // add alias for application code directory
                 alias: {
