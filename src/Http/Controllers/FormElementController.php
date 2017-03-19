@@ -110,7 +110,7 @@ class FormElementController extends Controller
         $query = $repository->getQuery();
 
         if (!is_null($filter = $element->getQueryFilter())) {
-            $filter($element, $query);
+            $query = $filter($element, $query);
         }
 
         $field = $request->field;
@@ -174,7 +174,7 @@ class FormElementController extends Controller
         $query = $repository->getQuery();
 
         if (!is_null($filter = $element->getQueryFilter())) {
-            $filter($element, $query);
+            $query = $filter($element, $query);
         }
 
         $field = $request->field;
