@@ -2,11 +2,15 @@
 
 namespace SleepingOwl\Admin\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use SleepingOwl\Admin\Form\Element\DependentSelect;
 use SleepingOwl\Admin\Contracts\ModelConfigurationInterface;
+use SleepingOwl\Admin\Contracts\Repositories\RepositoryInterface;
+use SleepingOwl\Admin\Form\Element\DependentSelect;
+use SleepingOwl\Admin\Form\Element\MultiSelectAjax;
+use SleepingOwl\Admin\Form\Element\SelectAjax;
 
 class FormElementController extends Controller
 {
@@ -20,9 +24,9 @@ class FormElementController extends Controller
      */
     public function dependentSelect(Request $request, ModelConfigurationInterface $model, $field, $id = null)
     {
-        if (! is_null($id)) {
+        if (!is_null($id)) {
             $item = $model->getRepository()->find($id);
-            if (is_null($item) || ! $model->isEditable($item)) {
+            if (is_null($item) || !$model->isEditable($item)) {
                 return new JsonResponse([
                     'message' => trans('lang.message.access_denied'),
                 ], 403);
@@ -30,7 +34,7 @@ class FormElementController extends Controller
 
             $form = $model->fireEdit($id);
         } else {
-            if (! $model->isCreatable()) {
+            if (!$model->isCreatable()) {
                 return new JsonResponse([
                     'message' => trans('lang.message.access_denied'),
                 ], 403);
@@ -74,9 +78,9 @@ class FormElementController extends Controller
      */
     public function multiselectSearch(Request $request, ModelConfigurationInterface $model, $field, $id = null)
     {
-        if (! is_null($id)) {
+        if (!is_null($id)) {
             $item = $model->getRepository()->find($id);
-            if (is_null($item) || ! $model->isEditable($item)) {
+            if (is_null($item) || !$model->isEditable($item)) {
                 return new JsonResponse([
                     'message' => trans('lang.message.access_denied'),
                 ], 403);
@@ -84,7 +88,7 @@ class FormElementController extends Controller
 
             $form = $model->fireEdit($id);
         } else {
-            if (! $model->isCreatable()) {
+            if (!$model->isCreatable()) {
                 return new JsonResponse([
                     'message' => trans('lang.message.access_denied'),
                 ], 403);
@@ -93,29 +97,38 @@ class FormElementController extends Controller
             $form = $model->fireCreate();
         }
 
-        /** @var DependentSelect $element */
+        /** @var MultiSelectAjax $element */
         if (is_null($element = $form->getElement($field))) {
             return new JsonResponse([
                 'message' => 'Element not found',
             ], 404);
         }
 
-        $field = $request->field;
-        $model = new $request->model;
+        $repository = app(RepositoryInterface::class);
+        $repository->setModel($element->getModelForOptions());
 
-        if ($request->q && is_object($model)) {
-            return new JsonResponse(
-                $model::where($request->field, 'like', "%{$request->q}%")
-                    ->get()
-                    ->map(function ($item) use ($field) {
-                        return [
-                            'tag_name'    => $item->{$field},
-                            'id'          => $item->id,
-                            'custom_name' => $item->custom_name,
-                        ];
-                    })
-            );
+        $query = $repository->getQuery();
+
+        if (is_callable($filter = $element->getQueryFilter())) {
+            $filter($element, $query);
         }
+
+        $field = $request->field;
+
+        if ($request->q) {
+            $query->where($field, 'like', "%{$request->q}%");
+        }
+
+        return new JsonResponse(
+            $query->get()
+                ->map(function ($item) use ($field) {
+                    return [
+                        'tag_name' => $item->{$field},
+                        'id' => $item->id,
+                        'custom_name' => $item->custom_name,
+                    ];
+                })
+        );
     }
 
     /**
@@ -128,9 +141,9 @@ class FormElementController extends Controller
      */
     public function selectSearch(Request $request, ModelConfigurationInterface $model, $field, $id = null)
     {
-        if (! is_null($id)) {
+        if (!is_null($id)) {
             $item = $model->getRepository()->find($id);
-            if (is_null($item) || ! $model->isEditable($item)) {
+            if (is_null($item) || !$model->isEditable($item)) {
                 return new JsonResponse([
                     'message' => trans('lang.message.access_denied'),
                 ], 403);
@@ -138,7 +151,7 @@ class FormElementController extends Controller
 
             $form = $model->fireEdit($id);
         } else {
-            if (! $model->isCreatable()) {
+            if (!$model->isCreatable()) {
                 return new JsonResponse([
                     'message' => trans('lang.message.access_denied'),
                 ], 403);
@@ -147,28 +160,38 @@ class FormElementController extends Controller
             $form = $model->fireCreate();
         }
 
-        /** @var DependentSelect $element */
+        /** @var SelectAjax $element */
         if (is_null($element = $form->getElement($field))) {
             return new JsonResponse([
                 'message' => 'Element not found',
             ], 404);
         }
 
-        $field = $request->field;
-        $model = new $request->model;
+        $repository = app(RepositoryInterface::class);
+        $repository->setModel($element->getModelForOptions());
 
-        if ($request->q && is_object($model)) {
-            return new JsonResponse(
-                $model::where($request->field, 'like', "%{$request->q}%")
-                    ->get()
-                    ->map(function ($item) use ($field) {
-                        return [
-                            'tag_name'    => $item->{$field},
-                            'id'          => $item->id,
-                            'custom_name' => $item->custom_name,
-                        ];
-                    })
-            );
+        /** @var Builder $query */
+        $query = $repository->getQuery();
+
+        if (is_callable($filter = $element->getQueryFilter())) {
+            $filter($element, $query);
         }
+
+        $field = $request->field;
+
+        if ($request->q) {
+            $query->where($field, 'like', "%{$request->q}%");
+        }
+
+        return new JsonResponse(
+            $query->get()
+                ->map(function ($item) use ($field) {
+                    return [
+                        'tag_name' => $item->{$field},
+                        'id' => $item->id,
+                        'custom_name' => $item->custom_name,
+                    ];
+                })
+        );
     }
 }

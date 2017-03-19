@@ -13,6 +13,7 @@ class SelectAjax extends Select implements Initializable, WithRoutesInterface
     protected static $route = 'selectajax';
     protected $view = 'form.element.selectajax';
     protected $search_url = null;
+    protected $queryFilter;
 
     /**
      * @param string $path
@@ -48,7 +49,27 @@ class SelectAjax extends Select implements Initializable, WithRoutesInterface
     }
 
     /**
-     * @param $url
+     * @param callable $callable
+     * @return $this
+     */
+    public function setQueryFilter($callable)
+    {
+        $this->queryFilter = $callable;
+
+        return $this;
+    }
+
+    /**
+     * @return callable
+     */
+    public function getQueryFilter()
+    {
+        return $this->queryFilter;
+    }
+
+    /**
+     * @param string $url
+     * @return $this
      */
     public function setSearchUrl($url)
     {

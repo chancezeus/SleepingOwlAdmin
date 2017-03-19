@@ -20,6 +20,8 @@ class MultiSelectAjax extends MultiSelect implements Initializable, WithRoutesIn
 
     protected $min_symbols = 3;
 
+    protected $queryFilter;
+
     /**
      * MultiSelectAjax constructor.
      * @param string $path
@@ -46,6 +48,25 @@ class MultiSelectAjax extends MultiSelect implements Initializable, WithRoutesIn
     public function getFieldName()
     {
         return str_replace('[]', '', $this->getName());
+    }
+
+    /**
+     * @param callable $callable
+     * @return $this
+     */
+    public function setQueryFilter($callable)
+    {
+        $this->queryFilter = $callable;
+
+        return $this;
+    }
+
+    /**
+     * @return callable
+     */
+    public function getQueryFilter()
+    {
+        return $this->queryFilter;
     }
 
     /**
