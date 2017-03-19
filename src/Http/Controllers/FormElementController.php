@@ -109,7 +109,7 @@ class FormElementController extends Controller
 
         $query = $repository->getQuery();
 
-        if (is_callable($filter = $element->getQueryFilter())) {
+        if (!is_null($filter = $element->getQueryFilter())) {
             $filter($element, $query);
         }
 
@@ -173,7 +173,7 @@ class FormElementController extends Controller
         /** @var Builder $query */
         $query = $repository->getQuery();
 
-        if (is_callable($filter = $element->getQueryFilter())) {
+        if (!is_null($filter = $element->getQueryFilter())) {
             $filter($element, $query);
         }
 
