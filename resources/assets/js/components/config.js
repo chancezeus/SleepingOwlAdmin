@@ -1,4 +1,4 @@
-module.exports = class ConfigReposirtory {
+module.exports = class ConfigRepository {
 
     constructor(config) {
         this.__data = config || {};

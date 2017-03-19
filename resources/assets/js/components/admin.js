@@ -50,7 +50,7 @@ module.exports = class Admin {
     }
 
     /**
-     * @returns {ConfigReposirtory}
+     * @returns {ConfigRepository}
      */
     get Config() {
         return this.__config
